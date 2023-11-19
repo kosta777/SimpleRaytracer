@@ -117,7 +117,6 @@ void Camera::RecalculateView()
 	m_InverseView = glm::inverse(m_View);
 }
 
-//reverse of vertex shader, here we know the target in camera space (since its pixels on the screen), so we need to reverse the VP transofrmation to get the target in world space
 void Camera::RecalculateRayDirections()
 {
 	m_RayDirections.resize(m_ViewportWidth * m_ViewportHeight);
@@ -135,3 +134,4 @@ void Camera::RecalculateRayDirections()
 		}
 	}
 }
+

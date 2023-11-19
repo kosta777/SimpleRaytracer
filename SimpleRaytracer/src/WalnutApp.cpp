@@ -14,13 +14,14 @@ using namespace Walnut;
 class ExampleLayer : public Walnut::Layer
 {
 public:
-	ExampleLayer() : m_Camera(45.0f, 0.1f, 100.0f) {}
+	ExampleLayer() : m_Camera(45.0f, 0.1f, 100.0f) {
+		m_Scene.Spheres.push_back(Sphere{ {0.0f, 0.0f, 0.0f}, 0.5f, {1.0f, 0.0f, 1.0f} });
+		m_Scene.Spheres.push_back(Sphere{ {1.0f, 2.0f, -4.0f}, 1.5f, {0.0f, 1.0f, 1.0f} });
+	}
 
 	virtual void OnUpdate(float ts) override {
 		Walnut::Layer::OnUpdate(ts);
 		m_Camera.OnUpdate(ts);
-		m_Scene.Spheres.push_back(Sphere{ {0.0f, 0.0f, 0.0f}, 0.5f, {1.0f, 0.0f, 1.0f} });
-		//m_Scene.Spheres.push_back(Sphere{ {1.0f, 2.0f, -4.0f}, 1.5f, {0.0f, 1.0f, 1.0f} });
 	}
 
 	virtual void OnUIRender() override
@@ -34,9 +35,20 @@ public:
 		ImGui::End();
 
 		ImGui::Begin("Scene");
-		ImGui::DragFloat3("Position", glm::value_ptr(m_Scene.Spheres[0].Position), 0.1f);
-		ImGui::DragFloat("Radius", &m_Scene.Spheres[0].Radius, 0.1f);
-		ImGui::ColorEdit3("Albedo", glm::value_ptr(m_Scene.Spheres[0].Albedo));
+		for (size_t i = 0; i < m_Scene.Spheres.size(); i++)
+		{
+			ImGui::PushID(i);
+
+			Sphere& sphere = m_Scene.Spheres[i];
+			ImGui::DragFloat3("Position", glm::value_ptr(sphere.Position), 0.1f);
+			ImGui::DragFloat("Radius", &sphere.Radius, 0.1f);
+			ImGui::ColorEdit3("Albedo", glm::value_ptr(sphere.Albedo));
+
+			ImGui::Separator();
+
+			ImGui::PopID();
+		}
+
 		ImGui::Text("Last render: %.3fms", m_LastRenderTime);
 		if (ImGui::Button("Render"))
 		{
